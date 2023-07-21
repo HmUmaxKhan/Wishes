@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
+const md5 = require('md5');
 
 const app = express();
 
@@ -32,7 +33,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) =>{
    const newUser = new Users({
     email: req.body.email,
-    password: req.body.password
+    password: md5(req.body.password)
    })
 
    newUser.save().catch(err => {console.log(err)});
@@ -50,7 +51,7 @@ app.get("/secrets", (req, res) => {
 
 app.post("/login", (req, res) => {
     const email = req.body.email;
-    const password = req.body.password;
+    const password = md5(req.body.password);
 
     Users.findOne({ email: email }).then(user => {
         if (user && user.password === password) {
